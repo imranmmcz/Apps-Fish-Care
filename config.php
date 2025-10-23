@@ -30,7 +30,7 @@ switch($action) {
         json_response('error', 'Invalid action', null);
 }
 
-// Login Function
+// Login Function 
 function login($conn) {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         json_response('error', 'Invalid request method', null);
