@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Care - মাছ চাষ ব্যবস্থাপনা সিস্টেম</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: calc(100vh - 56px);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+
+        .sidebar .nav-link {
+            color: #333;
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .content-area {
+            padding: 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            min-height: calc(100vh - 100px);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .table-custom {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <i class="fas fa-fish fa-4x text-primary mb-3"></i>
+                <h2 class="mb-2">Fish Care</h2>
+                <p class="text-muted">মাছ চাষ ব্যবস্থাপনা সিস্টেম</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">ইউজার টাইপ</label>
+                    <select class="form-select" id="userType" required>
+                        <option value="">নির্বাচন করুন</option>
+                        <option value="farmer">চাষী</option>
+                        <option value="seller">বিক্রেতা</option>
+                        <option value="wholesaler">পাইকার</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">মোবাইল নম্বর</label>
+                    <input type="tel" class="form-control" id="mobile" placeholder="01XXXXXXXXX" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">পাসওয়ার্ড</label>
+                    <input type="password" class="form-control" id="password" placeholder="পাসওয়ার্ড দিন" required>
+                </div>
+                
+                <button type="submit" class="btn btn-gradient w-100 py-2 mb-3">
+                    <i class="fas fa-sign-in-alt me-2"></i>লগইন করুন
+                </button>
+                
+                <div class="text-center">
+                    <a href="#" class="text-decoration-none">নতুন একাউন্ট তৈরি করুন</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardPage" style="display: none;">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-fish me-2"></i>Fish Care
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i>
+                                <span id="userName">ব্যবহারকারী</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit me-2"></i>প্রোফাইল</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>সেটিংস</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>লগআউট</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar">
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                            <i class="fas fa-home me-2"></i>ড্যাশবোর্ড
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('market')">
+                            <i class="fas fa-chart-line me-2"></i>বাজার দর
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('accounts')" id="accountsMenu">
+                            <i class="fas fa-calculator me-2"></i>আয়-ব্যয়
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('stock')">
+                            <i class="fas fa-boxes me-2"></i>মজুদ তথ্য
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('invoice')" id="invoiceMenu">
+                            <i class="fas fa-file-invoice me-2"></i>চালান
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('reports')">
+                            <i class="fas fa-chart-bar me-2"></i>রিপোর্ট
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-10">
+                    <div class="content-area mt-3">
+                        
+                        <!-- Dashboard Section -->
+                        <div id="dashboardSection">
+                            <h3 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>ড্যাশবোর্ড</h3>
+                            
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted">মোট বিক্রয়</h6>
+                                                <h3 class="mb-0">৳ ২,৫০,০০০</h3>
+                                            </div>
+                                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted">মোট লাভ</h6>
+                                                <h3 class="mb-0 text-success">৳ ৫০,০০০</h3>
+                                            </div>
+                                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                                <i class="fas fa-chart-line"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted">মজুদ (কেজি)</h6>
+                                                <h3 class="mb-0">১,৫০০</h3>
+                                            </div>
+                                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                                <i class="fas fa-weight"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="text-muted">মাছের প্রজাতি</h6>
+                                                <h3 class="mb-0">৮</h3>
+                                            </div>
+                                            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                                <i class="fas fa-fish"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card-custom p-3">
+                                        <h5 class="mb-3">সাম্প্রতিক লেনদেন</h5>
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>তারিখ</th>
+                                                    <th>মাছের ধরন</th>
+                                                    <th>পরিমাণ</th>
+                                                    <th>মূল্য</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>২৩/১০/২০২৫</td>
+                                                    <td>রুই মাছ</td>
+                                                    <td>৫০ কেজি</td>
+                                                    <td>৳ ১০,০০০</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>২২/১০/২০২৫</td>
+                                                    <td>কাতলা মাছ</td>
+                                                    <td>৪০ কেজি</td>
+                                                    <td>৳ ৮,০০০</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>২১/১০/২০২৫</td>
+                                                    <td>পাংগাস মাছ</td>
+                                                    <td>৬০ কেজি</td>
+                                                    <td>৳ ৯,০০০</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card-custom p-3">
+                                        <h5 class="mb-3">মাছের বাজার দর (আজকের)</h5>
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>মাছের নাম</th>
+                                                    <th>প্রতি কেজি দর</th>
+                                                    <th>পরিবর্তন</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>রুই</td>
+                                                    <td>৳ ২০০</td>
+                                                    <td><span class="badge bg-success">+৫%</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>কাতলা</td>
+                                                    <td>৳ ১৮০</td>
+                                                    <td><span class="badge bg-danger">-৩%</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>পাংগাস</td>
+                                                    <td>৳ ১৫০</td>
+                                                    <td><span class="badge bg-success">+২%</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Rate Section -->
+                        <div id="marketSection" style="display: none;">
+                            <h3 class="mb-4"><i class="fas fa-chart-line me-2"></i>বাজার দর</h3>
+                            
+                            <div class="card-custom p-3 mb-3">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label">বিভাগ</label>
+                                        <select class="form-select" id="division">
+                                            <option>ঢাকা</option>
+                                            <option>চট্টগ্রাম</option>
+                                            <option>রাজশাহী</option>
+                                            <option>খুলনা</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">জেলা</label>
+                                        <select class="form-select" id="district">
+                                            <option>ঢাকা</option>
+                                            <option>গাজীপুর</option>
+                                            <option>নারায়ণগঞ্জ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">উপজেলা</label>
+                                        <select class="form-select" id="upazila">
+                                            <option>ধামরাই</option>
+                                            <option>সাভার</option>
+                                            <option>কেরানীগঞ্জ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button class="btn btn-gradient w-100">
+                                            <i class="fas fa-search me-2"></i>খুঁজুন
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom p-3">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>মাছের নাম</th>
+                                            <th>সাইজ</th>
+                                            <th>প্রতি কেজি দর</th>
+                                            <th>সর্বনিম্ন</th>
+                                            <th>সর্বোচ্চ</th>
+                                            <th>পরিবর্তন</th>
+                                            <th>সর্বশেষ আপডেট</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="marketRateTable">
+                                        <tr>
+                                            <td><i class="fas fa-fish text-primary me-2"></i>রুই মাছ</td>
+                                            <td>বড়</td>
+                                            <td><strong>৳ ২০০</strong></td>
+                                            <td>৳ ১৮০</td>
+                                            <td>৳ ২২০</td>
+                                            <td><span class="badge bg-success">+৫%</span></td>
+                                            <td>২৩/১০/২০২৫</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fas fa-fish text-primary me-2"></i>কাতলা মাছ</td>
+                                            <td>মাঝারি</td>
+                                            <td><strong>৳ ১৮০</strong></td>
+                                            <td>৳ ১৬০</td>
+                                            <td>৳ ২০০</td>
+                                            <td><span class="badge bg-danger">-৩%</span></td>
+                                            <td>২৩/১০/২০২৫</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fas fa-fish text-primary me-2"></i>পাংগাস মাছ</td>
+                                            <td>বড়</td>
+                                            <td><strong>৳ ১৫০</strong></td>
+                                            <td>৳ ১৪০</td>
+                                            <td>৳ ১৬০</td>
+                                            <td><span class="badge bg-success">+২%</span></td>
+                                            <td>২৩/১০/২০২৫</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Accounts Section -->
+                        <div id="accountsSection" style="display: none;">
+                            <h3 class="mb-4"><i class="fas fa-calculator me-2"></i>আয়-ব্যয় হিসাব</h3>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                                        <i class="fas fa-plus me-2"></i>নতুন লেনদেন যোগ করুন
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-success text-white">
+                                        <h6>মোট আয়</h6>
+                                        <h3>৳ ৩,০০,০০০</h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-danger text-white">
+                                        <h6>মোট ব্যয়</h6>
+                                        <h3>৳ ২,৫০,০০০</h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-primary text-white">
+                                        <h6>নিট লাভ</h6>
+                                        <h3>৳ ৫০,০০০</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom p-3">
+                                <h5 class="mb-3">লেনদেনের তালিকা</h5>
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>তারিখ</th>
+                                            <th>বিবরণ</th>
+                                            <th>ধরন</th>
+                                            <th>পরিমাণ</th>
+                                            <th>ব্যালেন্স</th>
+                                            <th>অ্যাকশন</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactionTable">
+                                        <tr>
+                                            <td>২৩/১০/২০২৫</td>
+                                            <td>মাছ বিক্রয়</td>
+                                            <td><span class="badge bg-success">আয়</span></td>
+                                            <td class="text-success">৳ ৫০,০০০</td>
+                                            <td>৳ ৫০,০০০</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Stock Section -->
+                        <div id="stockSection" style="display: none;">
+                            <h3 class="mb-4"><i class="fas fa-boxes me-2"></i>মজুদ তথ্য</h3>
+                            
+                            <div class="card-custom p-3 mb-3">
+                                <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#addStockModal">
+                                    <i class="fas fa-plus me-2"></i>নতুন মজুদ যোগ করুন
+                                </button>
+                            </div>
+
+                            <div class="card-custom p-3">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>মাছের নাম</th>
+                                            <th>সাইজ</th>
+                                            <th>পরিমাণ (কেজি)</th>
+                                            <th>গড় ওজন</th>
+                                            <th>মোট মূল্য</th>
+                                            <th>অবস্থান</th>
+                                            <th>অ্যাকশন</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="stockTable">
+                                        <tr>
+                                            <td>রুই মাছ</td>
+                                            <td>বড়</td>
+                                            <td>৫০০</td>
+                                            <td>১.৫ কেজি</td>
+                                            <td>৳ ১,০০,০০০</td>
+                                            <td>পুকুর-১</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Section -->
+                        <div id="invoiceSection" style="display: none;">
+                            <h3 class="mb-4"><i class="fas fa-file-invoice me-2"></i>চালান তৈরি</h3>
+                            
+                            <div class="card-custom p-4">
+                                <form id="invoiceForm">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">ক্রেতার নাম</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">মোবাইল নম্বর</label>
+                                                <input type="tel" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">ঠিকানা</label>
+                                        <textarea class="form-control" rows="2"></textarea>
+                                    </div>
+
+                                    <h5 class="mt-4 mb-3">পণ্যের তালিকা</h5>
+                                    <div id="invoiceItems">
+                                        <div class="row mb-2">
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="মাছের নাম">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" class="form-control" placeholder="পরিমাণ">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" class="form-control" placeholder="দর">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="text" class="form-control" placeholder="মোট" readonly>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-success w-100" onclick="addInvoiceRow()">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-4">
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light p-3">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <strong>সাবটোটাল:</strong>
+                                                    <span>৳ ০</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <strong>ছাড়:</strong>
+                                                    <input type="number" class="form-control form-control-sm" style="width: 80px;" value="0">
+                                                </div>
+                                                <hr>
+                                                <div class="d-flex justify-content-between">
+                                                    <strong>মোট:</strong>
+                                                    <strong class="text-primary">৳ ০</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-gradient me-2">
+                                            <i class="fas fa-save me-2"></i>চালান সংরক্ষণ করুন
+                                        </button>
+                                        <button type="button" class="btn btn-secondary">
+                                            <i class="fas fa-print me-2"></i>প্রিন্ট করুন
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Reports Section -->
+                        <div id="reportsSection" style="display: none;">
+                            <h3 class="mb-4"><i class="fas fa-chart-bar me-2"></i>রিপোর্ট</h3>
+                            
+                            <div class="card-custom p-3 mb-3">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label">রিপোর্ট টাইপ</label>
+                                        <select class="form-select">
+                                            <option>দৈনিক রিপোর্ট</option>
+                                            <option>সাপ্তাহিক রিপোর্ট</option>
+                                            <option>মাসিক রিপোর্ট</option>
+                                            <option>বার্ষিক রিপোর্ট</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">শুরুর তারিখ</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">শেষ তারিখ</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button class="btn btn-gradient w-100">
+                                            <i class="fas fa-file-export me-2"></i>রিপোর্ট তৈরি করুন
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card-custom p-3">
+                                        <h5 class="mb-3">বিক্রয় সারসংক্ষেপ</h5>
+                                        <canvas id="salesChart" height="200"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card-custom p-3">
+                                        <h5 class="mb-3">লাভ-ক্ষতি বিশ্লেষণ</h5>
+                                        <canvas id="profitChart" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom p-3 mt-3">
+                                <h5 class="mb-3">বিস্তারিত রিপোর্ট</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>মাস</th>
+                                                <th>মোট বিক্রয়</th>
+                                                <th>মোট খরচ</th>
+                                                <th>লাভ</th>
+                                                <th>লাভের হার</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>অক্টোবর ২০২৫</td>
+                                                <td>৳ ২,৫০,০০০</td>
+                                                <td>৳ ২,০০,০০০</td>
+                                                <td class="text-success">৳ ৫০,০০০</td>
+                                                <td><span class="badge bg-success">২৫%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>সেপ্টেম্বর ২০২৫</td>
+                                                <td>৳ ২,২০,০০০</td>
+                                                <td>৳ ১,৮০,০০০</td>
+                                                <td class="text-success">৳ ৪০,০০০</td>
+                                                <td><span class="badge bg-success">২২%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div class="modal fade" id="addTransactionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">নতুন লেনদেন যোগ করুন</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTransactionForm">
+                        <div class="mb-3">
+                            <label class="form-label">তারিখ</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">লেনদেনের ধরন</label>
+                            <select class="form-select" required>
+                                <option value="income">আয়</option>
+                                <option value="expense">ব্যয়</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">বিভাগ</label>
+                            <select class="form-select" required>
+                                <option>মাছ বিক্রয়</option>
+                                <option>মাছ ক্রয়</option>
+                                <option>খাবার</option>
+                                <option>ওষুধ</option>
+                                <option>শ্রমিক</option>
+                                <option>অন্যান্য</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">পরিমাণ (টাকা)</label>
+                            <input type="number" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">বিবরণ</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-gradient">সংরক্ষণ করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Stock Modal -->
+    <div class="modal fade" id="addStockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">নতুন মজুদ যোগ করুন</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStockForm">
+                        <div class="mb-3">
+                            <label class="form-label">মাছের নাম</label>
+                            <select class="form-select" required>
+                                <option>রুই মাছ</option>
+                                <option>কাতলা মাছ</option>
+                                <option>পাংগাস মাছ</option>
+                                <option>তেলাপিয়া</option>
+                                <option>শিং মাছ</option>
+                                <option>মাগুর মাছ</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">সাইজ</label>
+                            <select class="form-select" required>
+                                <option>ছোট</option>
+                                <option>মাঝারি</option>
+                                <option>বড়</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">পরিমাণ (কেজি)</label>
+                            <input type="number" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">গড় ওজন (কেজি)</label>
+                            <input type="number" step="0.1" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">প্রতি কেজি দর</label>
+                            <input type="number" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">অবস্থান</label>
+                            <input type="text" class="form-control" placeholder="পুকুর/ট্যাংক নম্বর">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-gradient">সংরক্ষণ করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userType = document.getElementById('userType').value;
+            const mobile = document.getElementById('mobile').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation
+            if (userType && mobile && password) {
+                // Hide login page and show dashboard
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                
+                // Set user name based on type
+                let userName = '';
+                switch(userType) {
+                    case 'farmer':
+                        userName = 'চাষী';
+                        document.getElementById('invoiceMenu').style.display = 'none';
+                        break;
+                    case 'seller':
+                        userName = 'বিক্রেতা';
+                        break;
+                    case 'wholesaler':
+                        userName = 'পাইকার';
+                        document.getElementById('accountsMenu').style.display = 'none';
+                        break;
+                }
+                document.getElementById('userName').textContent = userName;
+                
+                // Store user data (in real app, this would be in database)
+                sessionStorage.setItem('userType', userType);
+                sessionStorage.setItem('mobile', mobile);
+            }
+        });
+
+        // Logout functionality
+        function logout() {
+            sessionStorage.clear();
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Section navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboard', 'market', 'accounts', 'stock', 'invoice', 'reports'];
+            sections.forEach(section => {
+                document.getElementById(section + 'Section').style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').style.display = 'block';
+            
+            // Update active menu
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Add invoice row
+        function addInvoiceRow() {
+            const invoiceItems = document.getElementById('invoiceItems');
+            const newRow = document.createElement('div');
+            newRow.className = 'row mb-2';
+            newRow.innerHTML = `
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="মাছের নাম">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" placeholder="পরিমাণ">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" placeholder="দর">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" placeholder="মোট" readonly>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger w-100" onclick="removeInvoiceRow(this)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            `;
+            invoiceItems.appendChild(newRow);
+        }
+
+        // Remove invoice row
+        function removeInvoiceRow(button) {
+            button.closest('.row').remove();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const userType = sessionStorage.getItem('userType');
+            if (userType) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
